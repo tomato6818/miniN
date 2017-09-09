@@ -1,25 +1,37 @@
 package com.mini.config;
 
+import java.util.HashMap;
+
+import com.mini.log.LOG;
+
 public class Configuration {
 
-	public static final String TEST_CONF="";
+	private static final HashMap<String,String> map=new HashMap<String,String>();
+	public static final String TEST_CONF = "";
+	public static final int NIO_SERVER_PORT_NUMBER = 9891;
+	public static final String NIO_SERVER_PORT_NUMBER_GET = "NIO_SERVER_PORT_NUMBER";
+	public static final LOG log= new LOG();
 	
-
-	/* string 배열을 파싱하여 conf hashmap 에 저장  */
+	
+	public Configuration(){
+		map.put(NIO_SERVER_PORT_NUMBER_GET, NIO_SERVER_PORT_NUMBER+"");
+	}
+	
 	public Configuration(String[] args) {
+		this();
+	}
 
-	}
-	
-	/* conf 파일 경로를 받아 conf hashmap 에 저장  
-	 * conf 파일 경로의 파일시스템은 여러가지가 올수있다 */
 	public Configuration(String confPath) {
-		
+		this();
 	}
-	
-	public String get(String key){
-		
-		return null;
+
+	public String get(String key) {
+
+		return map.get(key);
 	}
-	
-	
+
+	public int getInt(String key) {
+		return Integer.parseInt(map.get(key));
+	}
+
 }
