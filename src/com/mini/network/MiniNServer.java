@@ -3,6 +3,7 @@ package com.mini.network;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -85,6 +86,7 @@ public class MiniNServer {
 		}
 
 		public void doAccept(SelectionKey key)throws IOException{
+			conf.log.println("Server :: doAccept");
 			ServerSocketChannel server = (ServerSocketChannel)key.channel();
 			SocketChannel client= server.accept();
 			client.configureBlocking(false);
@@ -95,6 +97,7 @@ public class MiniNServer {
 		}
 
 		public void doRead(SelectionKey key)throws IOException{
+			conf.log.println("Server :: doRead");
 			Connection c = (Connection)key.attachment();
 			c.readAndProcess();
 		}
@@ -114,10 +117,11 @@ public class MiniNServer {
 			ByteBuffer buff=ByteBuffer.allocateDirect(Byte.MAX_VALUE);
 			int count = client.read(buff);
 			String receivedMsg=null;
-			if(buff.remaining()==0){
+			if(count > 0){
 				buff.flip();
-				receivedMsg=buff.toString();
-				System.out.println("good reveice: "+receivedMsg);
+				CharBuffer charBuff=conf.charDecoder.decode(buff);
+				receivedMsg=charBuff.toString();
+				conf.log.println("Server :: good reveice: "+receivedMsg+" length():"+receivedMsg.length());
 			}
 			
 			ByteBuffer outBuff=ByteBuffer.wrap(("i was received messages : " +receivedMsg).getBytes() );
